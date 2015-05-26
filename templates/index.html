@@ -1,0 +1,82 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.core.urlresolvers import reverse %>
+<%inherit file="theme-base.html" />
+<%namespace name='static' file='static_content.html'/>
+
+<%! from microsite_configuration import microsite %>
+
+
+
+<%block name="splash">
+     
+  <h1>${_("Welcome to Gather Academy!")}</h1>
+  <p>${_("It works! This is the default homepage for this Open edX instance.")}</p>
+
+</%block>
+
+
+
+
+<section class="home">
+  
+  <section class="container">
+    <section class="highlighted-courses">
+
+      % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
+        <section class="courses">
+            <ul class="courses-listing">
+            
+
+            <% loopcount = 1 %>
+            
+            %for course in courses:
+
+              % if loopcount % 3 == 1:
+                <div class="row">
+              % endif
+
+                  <li class="courses-listing-item col-md-4">
+                    <%include file="theme-course.html" args="course=course" />
+                  </li>
+
+              % if loopcount % 3 == 0:
+                </div>
+              % endif
+
+              <% loopcount = loopcount + 1 %>
+
+            %endfor
+
+            % if (loopcount - 1) % 3 != 0:
+                </div>
+            % endif
+
+
+            </ul>
+        </section>
+      % endif
+
+    </section>
+  </section>
+</section>
+
+
+
+
+<%block name="js_extra">
+   <script type="text/javascript">
+      $(window).load(function() {
+         if(getParameterByName('next')) {
+              $('#login').trigger("click");
+         }
+      })
+   </script>
+</%block>
+
+% if show_signup_immediately is not UNDEFINED:
+  ## NOTE: This won't work in production, because anonymous views are cached, so it will
+  ## show either with or without this extra js for 3 minutes at a time.
+<script type="text/javascript">
+  $(window).load(function() {$('#signup_action').trigger("click");});
+</script>
+% endif

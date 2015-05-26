@@ -1,0 +1,27 @@
+## mako
+<%namespace name='static' file='/static_content.html'/>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width">
+
+<title>${settings.PLATFORM_NAME}</title>
+
+<!-- Bootstrap -->
+<link href="${static.url("themes/gatherworkshops/submodules/bootstrap/css/bootstrap.min.css")}" rel="stylesheet">
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="${static.url("themes/gatherworkshops/submodules/jquery/jquery-1.11.2.min.js")}"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="${static.url("themes/gatherworkshops/submodules/bootstrap/js/bootstrap.min.js")}"></script>
+
+<!-- Custom Fonts -->
+<link href="http://fonts.googleapis.com/css?family=Karla:400,400italic,700,700italic" rel="stylesheet" type="text/css">
+
+<!-- Styles -->
+<%static:css group='style-vendor'/>
+<%static:css group='style-app'/>
+
+<!-- Favicon -->
+<link rel="shortcut icon" href="${static.url("themes/gatherworkshops/images/favicon.ico")}">

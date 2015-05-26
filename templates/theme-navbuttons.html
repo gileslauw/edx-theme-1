@@ -1,0 +1,151 @@
+## mako
+<%namespace name='static' file='static_content.html'/>
+<%namespace file='theme-base.html' import="login_query"/>
+<%!
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
+
+# App that handles subdomain specific branding
+import branding
+# app that handles site status messages
+from status.status import get_site_status_msg
+%>
+<%! from microsite_configuration import microsite %>
+<%! from microsite_configuration.templatetags.microsite import platform_name %>
+
+
+
+
+
+    
+<!-- some course info stuff maybe? -->
+% if course:
+<h2>
+	<span class="provider">
+		${course.display_org_with_default | h}:
+	</span> 
+	${course.display_number_with_default | h} ${course.display_name_with_default}
+</h2>
+% endif
+
+
+
+<!-- AUTHENTICATED USERS -->
+
+% if user.is_authenticated():
+	
+	<!-- browse courses -->
+    % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
+        <li>
+            <a href="${marketing_link('COURSES')}">${_('Find Courses')}</a>
+        </li>
+    % endif
+
+    <!-- sysadmin dashboard -->
+    %if settings.FEATURES.get('ENABLE_SYSADMIN_DASHBOARD','') and user.is_staff:
+        <li>
+            <a href="${reverse('sysadmin')}">Sysadmin</a>
+        </li>
+    %endif
+
+    <!-- user dashboard -->
+    <li>
+        <a href="${reverse('dashboard')}" class="user-link">
+          <span class="avatar"></span>
+          <span class="sr">${_("Dashboard for:")} </span> ${user.username}
+        </a>
+    </li>
+
+    <!-- sign out -->
+	<li class="sign-out">
+		<a href="${reverse('logout')}">${_("Sign out")}</a>
+	</li>
+
+
+
+<!-- UNAUTHENTICATED / ALL VISITORS -->
+
+% else:
+	
+	<!-- marketing site links -->
+	% if microsite.get_value('ENABLE_MKTG_SITE', settings.FEATURES.get('ENABLE_MKTG_SITE', False)):
+      <li>
+        <a href="${marketing_link('HOW_IT_WORKS')}">${_("How it Works")}</a>
+      </li>
+      <li>
+        <a href="${marketing_link('COURSES')}">${_("Courses")}</a>
+      </li>
+      <li>
+        <a href="${marketing_link('SCHOOLS')}">${_("Schools")}</a>
+      </li>
+    % endif
+
+	<!-- log in -->
+	% if not settings.FEATURES['DISABLE_LOGIN_BUTTON']:
+        % if course and settings.FEATURES.get('RESTRICT_ENROLL_BY_REG_METHOD') and course.enrollment_domain:
+        	<li>
+          		<a class="btn btn-link" href="${reverse('course-specific-login', args=[course.id.to_deprecated_string()])}${login_query()}">${_("Sign in")}</a>
+          	</li>
+        % else:
+        	<li>
+          		<a class="btn btn-link" href="/login${login_query()}">${_("Sign in")}</a>
+          	</li>
+        % endif
+    % endif
+
+    <!-- register -->
+    % if not settings.FEATURES['DISABLE_LOGIN_BUTTON']:
+		% if course and settings.FEATURES.get('RESTRICT_ENROLL_BY_REG_METHOD') and course.enrollment_domain:
+			<li>
+				<a class="btn btn-default register" href="${reverse('course-specific-register', args=[course.id.to_deprecated_string()])}">${_("Register Now")}</a>
+			</li>
+		% else:
+			<li>
+				<a class="btn btn-default register" href="/register">${_("Register Now")}</a>
+			</li>
+		% endif
+	% endif
+
+% endif
+
+
+
+
+
+
+
+<!-- status message support -->
+<%block cached="False">
+<%
+try:
+    course_id = course.id.to_deprecated_string()
+except:
+    # can't figure out a better way to get at a possibly-defined course var
+    course_id = None
+site_status_msg = get_site_status_msg(course_id)
+%>
+% if site_status_msg:
+<div class="site-status">
+  <div class="inner-wrapper">
+    <span class="white-error-icon"></span>
+    <p>${site_status_msg}</p>
+  </div>
+</div>
+% endif
+</%block>	
+
+
+
+
+<!-- forgot password support -->
+%if not user.is_authenticated():
+  <%include file="forgot_password_modal.html" />
+%endif
+
+
+
+
+<!-- help support -->
+<%include file="help_modal.html"/>
+
+

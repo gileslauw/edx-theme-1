@@ -1,0 +1,50 @@
+<%namespace name='static' file='static_content.html'/>
+<%!
+from django.utils.translation import ugettext as _
+from django.core.urlresolvers import reverse
+from courseware.courses import course_image_url, get_course_about_section
+%>
+
+<%page args="course" />
+
+<%
+course_id = course.id
+course_name = get_course_about_section(course, 'title')
+course_number = course.display_number_with_default
+course_description = get_course_about_section(course, 'short_description')
+course_start_date = course.start_datetime_text()
+course_image = course_image_url(course)
+course_url = reverse('about_course', args=[course.id.to_deprecated_string()])
+
+default_image = 'themes/gatherworkshops/images/default-course-image.jpg'
+default_badge = 'themes/gatherworkshops/images/default-course-badge.jpg'
+
+%>
+
+<article id="${course_id | h}" class="course-tile">
+    <a href="${course_url}">
+        
+        <div class="course-badge">
+            <img src="${course_image}" 
+              onerror="$(this).attr('src', '${static.url(default_badge)}' );" 
+              alt="${course_number | h} ${course_name} Cover Image" />
+        </div>
+
+        <img class="header-image" 
+          src="${course_image}" 
+          onerror="$(this).attr('src', '${static.url(default_image)}' );" 
+          alt="${course_number} ${course_name} Cover Image" />
+
+        <div class="info">
+
+          <span class="subtitle">${course_number | h}</span>
+          <span class="title">${course_name}</span>
+
+          <p>${course_description}</p>
+
+          <span class="start-date">${course_start_date}</span>
+
+        </div><!-- .info -->
+
+    </a>
+</article>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!-- hello from theme-base teehee -->
+
+<%! from django.utils.http import urlquote_plus %>
+
+<html>
+  
+  <head>
+
+    <%include file="theme-head.html" />
+
+  </head>
+
+  <body>
+
+
+    <!-- navbar -->
+    <%include file="theme-navbar.html" />
+
+
+    <!-- splash header section -->
+    <header class="splash-header">
+      <%block name="splash"/>
+    </header>
+
+
+    <!-- main content section -->
+    <div class="content-wrapper" id="content">
+      ${self.body()}
+    </div>
+
+
+    <!-- footer -->
+    <%include file="theme-footer.html" />
+
+
+  </body>
+
+</html>
+
+
+<!-- login query function -->
+<%def name="login_query()">${
+  u"?course_id={0}&enrollment_action={1}{email_opt_in}".format(
+    urlquote_plus(course_id),
+    urlquote_plus(enrollment_action),
+    email_opt_in=(
+      u"&email_opt_in=" + urlquote_plus(email_opt_in)
+      if email_opt_in else ""
+    )
+  ) if course_id and enrollment_action else ""
+}</%def>
