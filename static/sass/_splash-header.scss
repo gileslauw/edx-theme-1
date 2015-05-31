@@ -14,7 +14,7 @@
     background-repeat: repeat;
     /*background-image: url("#{$static}/images/diamond-bg-tile.png"), 
         linear-gradient(to bottom, $splash-header-color 0px, lighten($splash-header-color, 20%) 100%);*/
-    background-image: linear-gradient(to bottom, $splash-header-color 0px, lighten($splash-header-color, 20%) 100%);
+    background-image: none, linear-gradient(to bottom, $splash-header-color 0px, lighten($splash-header-color, 20%) 100%);
 }
 
 .splash-header h1 {
